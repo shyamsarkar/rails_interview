@@ -47,11 +47,14 @@ class LoggerMiddleware
   end
 
   def call(env)
-    puts "Request started"
-
+    start_time = Time.now
     status, headers, response = @app.call(env)
+    end_time = Time.now
+    duration = end_time - start_time
 
-    puts "Request ended"
+    method = env["REQUEST_METHOD"]
+    path = env["PATH_INFO"]
+    Rails.logger.info "Path #{method} #{path} Time: #{duration} seconds"
 
     [status, headers, response]
   end
@@ -63,6 +66,7 @@ end
 ## 🔹 Adding Middleware in Rails
 ```ruby
 # config/application.rb
+require_relative "../lib/middleware/time_logger"
 config.middleware.use LoggerMiddleware
 ```
 

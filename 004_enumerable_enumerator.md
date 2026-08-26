@@ -64,6 +64,36 @@ puts enum.next   # 3
 - Create lazy (on-demand) sequences.
 - Build custom iterators.
 
+### Creating a Custom Enumerator
+
+You can create an `Enumerator` by passing a block. The block receives a
+**yielder** object, which sends values to the enumerator with `y << value`.
+
+```ruby
+e = Enumerator.new do |y|
+	a = 0
+	loop do
+		y << a
+		a += 1
+	end
+end
+
+e.next # => 0
+e.next # => 1
+e.next # => 2
+```
+
+This is an infinite enumerator, so calling `e.to_a` would never finish. Use
+`take` when consuming it as a finite collection:
+
+```ruby
+e.rewind
+e.take(5) # => [0, 1, 2, 3, 4]
+```
+
+The enumerator computes each value on demand and pauses at `y << a` until the
+next value is requested.
+
 ---
 
 ## Common Methods

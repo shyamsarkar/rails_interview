@@ -56,6 +56,44 @@ User.track_all     # => "Tracking all records"
 User.new.track     # => "Tracking instance"
 ```
 
+The hooks can also be used together when a module should expose different
+methods depending on whether it is included or extended:
+
+```ruby
+module Trackable
+  def self.included(cls)
+    cls.extend(ClassMethods)
+  end
+
+  def self.extended(cls)
+    cls.include(InstanceMethods)
+  end
+
+  module ClassMethods
+    def track_all
+      "Tracking all records"
+    end
+  end
+
+  module InstanceMethods
+    def track
+      "Tracking instance"
+    end
+  end
+end
+
+class User
+  include Trackable
+end
+
+class Admin
+  extend Trackable
+end
+
+User.track_all
+Admin.new.track
+```
+
 ---
 
 ## Q. Explain `include` (instance method), `prepend` (instance method with priority) and `extend` (class method).
@@ -185,3 +223,4 @@ But you can still see that `C` was added to `MyClass`'s singleton class:
 puts MyClass.singleton_class.ancestors
 # => [#<Class:MyClass>, C, #<Class:Object>, #<Class:BasicObject>]
 ```
+

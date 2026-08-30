@@ -39,7 +39,47 @@ Each middleware:
 
 ---
 
-## 🧠 Example (Custom Middleware)
+## � Rails Middleware Stack API
+
+In Rails, `config.middleware` is an instance of `ActionDispatch::MiddlewareStack`.
+
+It behaves like a stack of middleware objects that are assembled into the final Rack app.
+
+### 1) Adding / inserting
+
+- `use(klass, *args, &block)` — append to the end (innermost, right before the app)
+- `unshift(klass, *args, &block)` — prepend to the front (outermost)
+- `insert(index, klass, *args, &block)` — insert at a given position
+- `insert_before(index, klass, *args, &block)` — alias for `insert`
+- `insert_after(index, *args, &block)` — insert just after a given middleware
+
+### 2) Replacing / removing
+
+- `swap(target, *args, &block)` — replace one middleware with another
+- `delete(target)` — remove; returns `nil` if not found
+- `delete!(target)` — remove; raises `RuntimeError` if not found
+
+### 3) Reordering
+
+- `move(target, source)` — move `source` to before `target`
+- `move_before(target, source)` — alias for `move`
+- `move_after(target, source)` — move `source` to after `target`
+
+### 4) Reading / introspection
+
+- `[]` — index access into the stack
+- `each` — iterate over middlewares
+- `last` — the last (innermost) middleware
+- `size` — number of middlewares
+- `build` — assembles the final Rack app from the stack
+- `initialize_copy` — deep-copies the stack (used internally for `dup`)
+- `new` — constructor
+
+This is useful because Rails lets you modify the middleware chain at startup time, often in `config/application.rb` or environment files.
+
+---
+
+## �🧠 Example (Custom Middleware)
 ```ruby
 class LoggerMiddleware
   def initialize(app)

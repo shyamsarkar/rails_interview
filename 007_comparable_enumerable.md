@@ -18,6 +18,24 @@ The `<=>` method should return:
 - `0` → equal  
 - `1` → greater than  
 
+# Numeric comparisons
+1 <=> 2 # => -1 (1 is less than 2)
+2 <=> 2 # => 0 (equal)
+3 <=> 2 # => 1 (3 is greater than 2)
+
+# String comparisons
+"a" <=> "b" # => -1
+"b" <=> "b" # => 0
+"c" <=> "b" # => 1
+
+# Array comparisons (element by element)
+[1, 2] <=> [1, 3] # => -1
+[1, 2] <=> [1, 2] # => 0
+
+# Incomparable types
+1 <=> "a" # => nil
+
+
 ---
 
 ### 🧠 Example

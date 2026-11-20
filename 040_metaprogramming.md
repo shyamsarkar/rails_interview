@@ -45,22 +45,28 @@ object.public_send(:process)
 Handle unknown method calls dynamically and keep `respond_to?` consistent.
 
 ```ruby
-class QueryBuilder
-  def method_missing(name, *args, &block)
-    if name.to_s.start_with?("find_by_")
-      column = name.to_s.delete_prefix("find_by_")
-      "SELECT * FROM users WHERE #{column} = #{args.first.inspect}"
+class User
+  def method_missing(method_name, *args)
+    if method_name.to_s.start_with?("find_by_")
+      puts "Searching using #{method_name}"
     else
       super
     end
   end
 
-  def respond_to_missing?(name, include_private = false)
-    name.to_s.start_with?("find_by_") || super
+  def respond_to_missing?(method_name, include_private = false)
+    method_name.to_s.start_with?("find_by_") || super
   end
 end
 
-QueryBuilder.new.find_by_email("a@example.com")
+user = User.new
+
+user.find_by_name("Shyam")
+# Searching using find_by_name
+
+user.respond_to?(:find_by_name)
+# true
+
 ```
 
 ### Singleton methods and eigenclass

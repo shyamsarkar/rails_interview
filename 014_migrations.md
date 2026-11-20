@@ -59,6 +59,8 @@ end
 add_column :users, :age, :integer   # Add column
 remove_column :users, :age          # Remove column
 add_index :users, :email            # Add index
+add_index :orders, [:user_id, :status]
+remove_index :users, :email         # alternate-way=> remove_index :users, name: 'index_users_on_email'
 ```
 
 ---
